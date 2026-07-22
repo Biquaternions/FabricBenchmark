@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "benchmark",
+  "version": "${version}",
+  "name": "benchmark",
+  "description": "Benchmarking Fabric performance!",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/benchmark/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "me.biquaternions.benchmark.Benchmark"
+    ]
+  },
+  "mixins": [
+    "benchmark.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}"
+  }
+}
