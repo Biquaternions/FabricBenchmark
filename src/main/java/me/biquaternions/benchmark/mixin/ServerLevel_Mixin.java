@@ -1,166 +1,93 @@
 package me.biquaternions.benchmark.mixin;
 
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-import me.biquaternions.benchmark.util.ProfilerUtils;
+import me.biquaternions.benchmark.area.AreaType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.entity.EntityTickList;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.ticks.LevelTicks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 @Mixin(ServerLevel.class)
 public class ServerLevel_Mixin {
 
-    @Inject(
+    @Redirect(
             method = "tick",
             at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/world/ticks/LevelTicks;tick(JILjava/util/function/BiConsumer;)V",
+                    value = "INVOKE",
                     ordinal = 0
             )
     )
-    private void benchmark$beforeTickBlocks(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStartTickBlocks();
+    private void benchmark$tickBlocks(LevelTicks<Block> instance, long currentTick, int maxTicksToProcess, BiConsumer<BlockPos, Block> output) {
+        final long start = System.nanoTime();
+        instance.tick(currentTick, maxTicksToProcess, output);
+        AreaType.TICK_BLOCKS.getProfiler().push(System.nanoTime() - start);
     }
 
-    @Inject(
+    @Redirect(
             method = "tick",
             at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/world/ticks/LevelTicks;tick(JILjava/util/function/BiConsumer;)V",
-                    ordinal = 0,
-                    shift = At.Shift.AFTER
+                    value = "INVOKE",
+                    ordinal = 0
             )
     )
-    private void benchmark$afterTickBlocks(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStopTickBlocks();
+    private void benchmark$tickFluids(LevelTicks<Fluid> instance, long currentTick, int maxTicksToProcess, BiConsumer<BlockPos, Fluid> output) {
+        final long start = System.nanoTime();
+        instance.tick(currentTick, maxTicksToProcess, output);
+        AreaType.TICK_FLUIDS.getProfiler().push(System.nanoTime() - start);
     }
 
-    @Inject(
+    @Redirect(
             method = "tick",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/ticks/LevelTicks;tick(JILjava/util/function/BiConsumer;)V",
-                    ordinal = 1
-            )
-    )
-    private void benchmark$beforeTickFluids(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStartTickFluids();
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/ticks/LevelTicks;tick(JILjava/util/function/BiConsumer;)V",
-                    ordinal = 1,
-                    shift = At.Shift.AFTER
-            )
-    )
-    private void benchmark$afterTickFluids(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStopTickFluids();
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerChunkCache;tick(Ljava/util/function/BooleanSupplier;Z)V"
-            )
-    )
-    private void benchmark$beforeTickChunkSource(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStartTickChunkSources();
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerChunkCache;tick(Ljava/util/function/BooleanSupplier;Z)V",
-                    shift = At.Shift.AFTER
+                    value = "INVOKE",
+                    ordinal = 0
             )
     )
-    private void benchmark$afterTickChunkSource(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStopTickChunkSources();
+    private void benchmark$tickChunkSource(ServerChunkCache instance, BooleanSupplier haveTime, boolean tickChunks) {
+        final long start = System.nanoTime();
+        instance.tick(haveTime, tickChunks);
+        AreaType.TICK_CHUNK_SOURCE_FULL.getProfiler().push(System.nanoTime() - start);
     }
 
-    @Inject(
+    @Redirect(
             method = "tick",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/entity/EntityTickList;forEach(Ljava/util/function/Consumer;)V"
-            )
-    )
-    private void benchmark$beforeTickEntityList(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStartTickEntities();
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/world/level/entity/EntityTickList;forEach(Ljava/util/function/Consumer;)V",
-                    shift = At.Shift.AFTER
+                    value = "INVOKE",
+                    ordinal = 0
             )
     )
-    private void benchmark$afterTickEntityList(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStopTickEntities();
+    private void benchmark$tickEntities(EntityTickList instance, Consumer<Entity> output) {
+        final long start = System.nanoTime();
+        instance.forEach(output);
+        AreaType.TICK_ENTITIES.getProfiler().push(System.nanoTime() - start);
     }
 
-    @Inject(
-            method = "lambda$tick$0",
-            at = @At(
-                    value = "HEAD"
-            )
-    )
-    private void benchmark$beforeTickEntityIfVillager(TickRateManager tickRateManager, ProfilerFiller profiler, Entity entity, CallbackInfo ci, @Share("benchmark$isVillager") LocalBooleanRef isVillager) {
-        boolean villager = entity instanceof Villager;
-        isVillager.set(villager);
-        if (villager) {
-            ProfilerUtils.recordStartTickVillagerBrains();
-        }
-    }
-
-    @Inject(
-            method = "lambda$tick$0",
-            at = @At(
-                    value = "RETURN"
-            )
-    )
-    private void benchmark$afterTickEntityIfVillager(TickRateManager tickRateManager, ProfilerFiller profiler, Entity entity, CallbackInfo ci, @Share("benchmark$isVillager") LocalBooleanRef isVillager) {
-        if (isVillager.get()) {
-            ProfilerUtils.recordStopTickVillagerBrains();
-        }
-    }
-
-    @Inject(
+    @Redirect(
             method = "tick",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;tickBlockEntities()V"
-            )
-    )
-    private void benchmark$beforeTickBlockEntities(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStartTickBlockEntities();
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;tickBlockEntities()V",
-                    shift = At.Shift.AFTER
+                    value = "INVOKE",
+                    ordinal = 0
             )
     )
-    private void benchmark$afterTickBlockEntities(BooleanSupplier haveTime, CallbackInfo ci) {
-        ProfilerUtils.recordStopTickBlockEntities();
+    private void benchmark$tickBlockEntities(ServerLevel instance) {
+        final long start = System.nanoTime();
+        instance.tickBlockEntities();
+        AreaType.TICK_BLOCK_ENTITIES.getProfiler().push(System.nanoTime() - start);
     }
 
 }

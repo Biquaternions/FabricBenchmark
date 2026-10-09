@@ -9,6 +9,7 @@ group = project.findProperty("maven_group") as String
 val archivesBaseName = project.findProperty("archives_base_name") as String
 val minecraftVersion = project.findProperty("minecraft_version") as String
 val loaderVersion = project.findProperty("loader_version") as String
+val apiVersion = project.findProperty("fabric_api_version") as String
 
 base {
     archivesName.set(archivesBaseName)
@@ -26,7 +27,11 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:$minecraftVersion")
     implementation("net.fabricmc:fabric-loader:$loaderVersion")
+    implementation("net.fabricmc.fabric-api:fabric-api:$apiVersion")
+}
 
+loom {
+    accessWidenerPath = rootProject.file("src/main/resources/benchmark.classtweaker")
 }
 
 val targetJavaVersion = 25

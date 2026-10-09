@@ -4,6 +4,7 @@
   "package": "me.biquaternions.benchmark.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "MinecraftServer_Mixin",
     "ServerChunkCache_Mixin",
     "ServerLevel_Mixin"
   ],

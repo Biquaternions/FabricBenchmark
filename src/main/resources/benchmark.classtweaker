@@ -1,0 +1,7 @@
+classTweaker  v1  official
+
+accessible method net/minecraft/server/level/ServerChunkCache tickChunks ()V
+accessible method net/minecraft/server/level/ChunkMap tick ()V
+accessible method net/minecraft/server/level/ChunkMap tick (Ljava/util/function/BooleanSupplier;)V
+accessible method net/minecraft/server/MinecraftServer processPacketsAndTick (Z)V
+accessible method net/minecraft/server/MinecraftServer tickConnection ()V
