@@ -39,7 +39,7 @@ public class ServerLevel_Mixin {
             at = @At(
                     target = "Lnet/minecraft/world/ticks/LevelTicks;tick(JILjava/util/function/BiConsumer;)V",
                     value = "INVOKE",
-                    ordinal = 0
+                    ordinal = 1
             )
     )
     private void benchmark$tickFluids(LevelTicks<Fluid> instance, long currentTick, int maxTicksToProcess, BiConsumer<BlockPos, Fluid> output) {
