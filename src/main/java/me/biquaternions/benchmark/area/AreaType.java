@@ -28,7 +28,6 @@ public enum AreaType {
     BRAIN_FORGET_OUTDATED_MEMORIES(NoopProfiler::new),
 
 
-    LIVING_SUPER_TICK(NoopProfiler::new), // Entity base tick
     LIVING_AI_STEP(NoopProfiler::new),
 
     LIVING_SERVER_AI_STEP(NoopProfiler::new),

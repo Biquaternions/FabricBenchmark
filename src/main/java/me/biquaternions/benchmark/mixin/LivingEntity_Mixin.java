@@ -1,7 +1,6 @@
 package me.biquaternions.benchmark.mixin;
 
 import me.biquaternions.benchmark.area.AreaType;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,20 +9,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LivingEntity.class)
 public class LivingEntity_Mixin {
-
-    @Redirect(
-            method = "tick",
-            at = @At(
-                    target = "Lnet/minecraft/world/entity/Entity;tick()V",
-                    value = "INVOKE",
-                    ordinal = 0
-            )
-    )
-    private void benchmark$tick(Entity instance) {
-        final long start = System.nanoTime();
-        instance.tick();
-        AreaType.LIVING_SUPER_TICK.getProfiler().push(System.nanoTime() - start);
-    }
 
     @Redirect(
             method = "tick",
