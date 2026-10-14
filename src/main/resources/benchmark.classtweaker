@@ -5,3 +5,10 @@ accessible method net/minecraft/server/level/ChunkMap tick ()V
 accessible method net/minecraft/server/level/ChunkMap tick (Ljava/util/function/BooleanSupplier;)V
 accessible method net/minecraft/server/MinecraftServer processPacketsAndTick (Z)V
 accessible method net/minecraft/server/MinecraftServer tickConnection ()V
+accessible method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
+accessible method net/minecraft/world/entity/ai/Brain tickSensors (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/entity/ai/Brain startEachNonRunningBehavior (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/entity/ai/Brain tickEachRunningBehavior (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/entity/LivingEntity serverAiStep ()V
+accessible method net/minecraft/world/entity/Entity applyEffectsFromBlocks ()V
+accessible method net/minecraft/world/entity/LivingEntity pushEntities ()V

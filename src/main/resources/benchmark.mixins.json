@@ -4,6 +4,8 @@
   "package": "me.biquaternions.benchmark.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "Brain_Mixin",
+    "LivingEntity_Mixin",
     "MinecraftServer_Mixin",
     "ServerChunkCache_Mixin",
     "ServerLevel_Mixin"

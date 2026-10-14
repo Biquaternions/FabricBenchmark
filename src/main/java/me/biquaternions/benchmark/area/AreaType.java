@@ -21,6 +21,21 @@ public enum AreaType {
     TICK_CONNECTION(NoopProfiler::new), // MinecraftServer
 
     TICK_SERVER(NoopProfiler::new),  // MinecraftServer - measures the entire tick loop
+
+    BRAIN_START_NON_RUNNING_BEHAVIOR(NoopProfiler::new),
+    BRAIN_TICK_SENSORS(NoopProfiler::new),
+    BRAIN_TICK_EACH_RUNNING_BEHAVIORS(NoopProfiler::new),
+    BRAIN_FORGET_OUTDATED_MEMORIES(NoopProfiler::new),
+
+
+    LIVING_SUPER_TICK(NoopProfiler::new), // Entity base tick
+    LIVING_AI_STEP(NoopProfiler::new),
+
+    LIVING_SERVER_AI_STEP(NoopProfiler::new),
+    LIVING_TRAVEL(NoopProfiler::new),
+    LIVING_APPLY_EFFECTS_FROM_BLOCKS(NoopProfiler::new),
+    LIVING_PUSH_ENTITIES(NoopProfiler::new),
+
     ;
 
     private AbstractProfiler profiler;
